@@ -1,0 +1,4 @@
+spring:
+   cloud:
+      gcp:
+         project: capstone-spring-boot-301
