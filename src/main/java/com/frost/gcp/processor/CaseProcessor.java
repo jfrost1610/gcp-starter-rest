@@ -10,8 +10,8 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
-import com.frost.gcp.model.MessageBody;
-import com.frost.gcp.repo.MessageRepo;
+import com.frost.gcp.model.payload.RequestPayload;
+import com.frost.gcp.service.CaseService;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -23,15 +23,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-public class MessageProcessor {
+public class CaseProcessor {
 
 	@Autowired
 	private Gson gson;
 
 	@Autowired
-	private MessageRepo messageRepo;
+	private CaseService caseService;
 
-	@ServiceActivator(inputChannel = "starterPubsubInputChannel")
+	@ServiceActivator(inputChannel = "casePubsubInputChannel")
 	public void messageReceiver(
 			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage originalMessage,
 			String payload) {
@@ -40,8 +40,10 @@ public class MessageProcessor {
 
 		try {
 
-			MessageBody body = gson.fromJson(payload, MessageBody.class);
-			messageRepo.save(body);
+			RequestPayload body = gson.fromJson(payload, RequestPayload.class);
+			caseService.save(body);
+
+			log.info("Case saved successfully!");
 
 		} catch (JsonSyntaxException e) {
 			log.error("Failed to parse the messaage!", e);

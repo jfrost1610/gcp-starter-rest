@@ -23,6 +23,9 @@ public class GCPConfig {
 	@Value("${gcp.resources.pubsub.subscription.starter}")
 	private String starterSub;
 
+	@Value("${gcp.resources.pubsub.subscription.case}")
+	private String caseSub;
+
 	@Bean
 	public PubSubInboundChannelAdapter messageChannelAdapter(
 			@Qualifier("starterPubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
@@ -34,6 +37,20 @@ public class GCPConfig {
 
 	@Bean
 	public MessageChannel starterPubsubInputChannel() {
+		return new DirectChannel();
+	}
+
+	@Bean
+	public PubSubInboundChannelAdapter caseMessageChannelAdapter(
+			@Qualifier("casePubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
+		PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(pubSubTemplate, caseSub);
+		adapter.setOutputChannel(inputChannel);
+		adapter.setAckMode(AckMode.MANUAL);
+		return adapter;
+	}
+
+	@Bean
+	public MessageChannel casePubsubInputChannel() {
 		return new DirectChannel();
 	}
 

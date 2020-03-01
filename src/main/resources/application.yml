@@ -3,3 +3,4 @@ gcp:
       pubsub:
          subscription:
             starter: gcp-starter-sub
+            case: service-case-sub
