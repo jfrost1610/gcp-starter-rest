@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteBatch;
@@ -42,7 +43,13 @@ public class CaseRepo {
 
 		try {
 			batch.commit().get();
-		} catch (InterruptedException | ExecutionException e) {
+		} catch (ExecutionException e) {
+			if (e.getCause().getClass().equals(AlreadyExistsException.class)) {
+				log.error("Case already exists!", e);
+			} else {
+				log.error("Failed to commit to firestore!", e);
+			}
+		} catch (Exception e) {
 			log.error("Failed to commit to firestore!", e);
 		}
 
