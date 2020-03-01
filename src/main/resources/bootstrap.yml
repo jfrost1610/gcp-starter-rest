@@ -2,9 +2,5 @@ spring:
    cloud:
       gcp:
          project: capstone-spring-boot-301
-         
-gcp:
-   resources:
-      pubsub:
-         subscription:
-            starter: gcp-starter-sub
+         firestore:
+            project-id: capstone-spring-boot-301

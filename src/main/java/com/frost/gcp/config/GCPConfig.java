@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.frost.gcp;
+package com.frost.gcp.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,6 @@ public class GCPConfig {
 		PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(pubSubTemplate, starterSub);
 		adapter.setOutputChannel(inputChannel);
 		adapter.setAckMode(AckMode.MANUAL);
-
 		return adapter;
 	}
 
