@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.frost.gcp.model.MessageBody;
+import com.frost.gcp.model.MessageUser;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 
@@ -31,9 +32,17 @@ public class MessageRepo {
 		try {
 
 			data.setTimeStamp(LocalDateTime.now().toString());
-			DocumentReference doc = this.firestore.collection("message").document();
-			doc.create(data).get();
-			log.info("Message saved in collection with id: {}!", doc.getId());
+
+			DocumentReference messageDocument = this.firestore.collection("message").document();
+			messageDocument.create(data).get();
+
+			log.info("Message saved in collection with id: {}!", messageDocument.getId());
+
+			MessageUser user = new MessageUser(data);
+			DocumentReference userDocument = messageDocument.collection("user").document();
+			userDocument.create(user).get();
+
+			log.info("User saved in collection with id: {}!", userDocument.getId());
 
 		} catch (InterruptedException | ExecutionException e) {
 			log.error("Failed to save message in collection!", e);
